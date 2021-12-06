@@ -1,11 +1,11 @@
-import RIPEMD160 from "ripemd160";
+import { ripemd160 as libRipemd160 } from "@noble/hashes/lib/ripemd160";
 
 import { HashFunction } from "./hash";
 
 export class Ripemd160 implements HashFunction {
   public readonly blockSize = 512 / 8;
 
-  private readonly impl = new RIPEMD160();
+  private readonly impl = libRipemd160.create();
 
   public constructor(firstData?: Uint8Array) {
     if (firstData) {
@@ -14,7 +14,7 @@ export class Ripemd160 implements HashFunction {
   }
 
   public update(data: Uint8Array): Ripemd160 {
-    this.impl.update(Buffer.from(data));
+    this.impl.update(data);
     return this;
   }
 
