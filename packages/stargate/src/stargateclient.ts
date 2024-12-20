@@ -383,6 +383,18 @@ export class StargateClient {
     return delegatedAmount || null;
   }
 
+  public async getDelegations(delegatorAddress: string) {
+    const allDelegations = [];
+    let startAtKey = undefined;
+    do {
+        const { delegationResponses, pagination } = await this.forceGetQueryClient().staking.delegatorDelegations(delegatorAddress, startAtKey);
+        const loadedDelegations = delegationResponses || [];
+        allDelegations.push(...loadedDelegations);
+        startAtKey = pagination?.nextKey;
+    } while (startAtKey !== undefined && startAtKey.length !== 0);
+    return allDelegations;
+  }
+
   public async getTx(id: string): Promise<IndexedTx | null> {
     const results = await this.txsQuery(`tx.hash='${id}'`);
     return results[0] ?? null;
